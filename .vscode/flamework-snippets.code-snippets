@@ -1,0 +1,75 @@
+{
+	"Flamework Controller": {
+		"scope": "typescript",
+		"prefix": [
+			"controller",
+			"flameworkcontroller"
+		],
+		"description": "Create a Flamework controller",
+		"body": [
+			"import { Controller, OnStart } from \"@flamework/core\";",
+			"",
+			"@Controller({})",
+			"export class ${TM_FILENAME_BASE/(.*)/${1:/pascalcase}/g} implements OnStart {",
+			"\tpublic onStart(): void {",
+			"\t\t$2",
+			"\t}",
+			"}",
+			"",
+		],
+	},
+	"Flamework Service": {
+		"scope": "typescript",
+		"prefix": [
+			"service",
+			"flameworkservice"
+		],
+		"description": "Create a Flamework service",
+		"body": [
+			"import { OnStart, Service } from \"@flamework/core\";",
+			"",
+			"@Service({})",
+			"export class ${TM_FILENAME_BASE/(.*)/${1:/pascalcase}/g} implements OnStart {",
+			"\tpublic onStart(): void {",
+			"\t\t$2",
+			"\t}",
+			"}",
+			"",
+		]
+	},
+	"Flamework Component": {
+		"scope": "typescript",
+		"prefix": [
+			"component",
+			"flameworkcomponent"
+		],
+		"description": "Create a Flamework component",
+		"body": [
+			"import { BaseComponent, Component } from \"@flamework/components\";",
+			"import { OnStart } from \"@flamework/core\";",
+			"",
+			"interface ${TM_FILENAME_BASE/(.*)(-.*)/${1:/pascalcase}/g}Attributes {}",
+			"",
+			"interface ${TM_FILENAME_BASE/(.*)(-.*)/${1:/pascalcase}/g}Instance extends ${2:BasePart} {}",
+			"",
+			"@Component({})",
+			"export class ${TM_FILENAME_BASE/(.*)/${1:/pascalcase}/g} extends BaseComponent<${TM_FILENAME_BASE/(.*)(-.*)/${1:/pascalcase}/g}Attributes, ${TM_FILENAME_BASE/(.*)(-.*)/${1:/pascalcase}/g}Instance> implements OnStart {",
+			"\tpublic onStart(): void {",
+			"\t\t$3",
+			"\t}",
+			"}",
+			"",
+		]
+	},
+	"Flamework Listener": {
+		"scope": "typescript",
+		"prefix": [
+			"listener",
+			"flameworklistener"
+		],
+		"description": "Create a Flamework listener",
+		"body": [
+			"const on$1Listener = createListener<$2>(\"$3\", Flamework.id<$2>());",
+		]
+	}
+}
