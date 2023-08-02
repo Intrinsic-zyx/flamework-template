@@ -1,3 +1,3 @@
 export interface PlayerMetadata {
-	player: Player;
+	user: number;
 }

@@ -1,4 +1,3 @@
-import { balanceSelector } from "./balance-selector";
-import { playerSelector } from "./player-selector";
+import { balanceSelector, playersSelector } from "./players-selector";
 
-export { balanceSelector, playerSelector };
+export { balanceSelector, playersSelector };

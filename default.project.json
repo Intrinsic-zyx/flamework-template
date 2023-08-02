@@ -43,6 +43,14 @@
 			"$className": "Workspace",
 			"$properties": {
 				"FilteringEnabled": true
+			},
+			"characters": {
+				"$className": "Folder",
+				"$ignoreUnknownInstances": false,
+				"players": {
+					"$className": "Folder",
+					"$ignoreUnknownInstances": true
+				}
 			}
 		},
 		"HttpService": {

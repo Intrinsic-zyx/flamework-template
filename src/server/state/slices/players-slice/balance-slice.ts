@@ -5,25 +5,19 @@ import {
 	BalanceRemoveCoins,
 	BalanceRemoveGems,
 	LoadPlayerData,
-} from "../actions";
+} from "server/state/actions";
 import { BalanceData } from "shared/types/data";
 import { BroadcastMetadata, PlayerMetadata } from "shared/state/metadata";
 import { createProducer } from "@rbxts/reflex";
 import Immut from "@rbxts/immut";
 
-export interface BalancePlayerState {
-	readonly data: BalanceData;
-}
+export type BalancePlayerState = BalanceData;
 
 export interface BalanceState {
-	readonly players: {
-		[index: number]: BalancePlayerState;
-	};
+	[user: string]: BalancePlayerState;
 }
 
-const balanceState: BalanceState = {
-	players: {},
-};
+const balanceState: BalanceState = {};
 
 export const balanceSlice = createProducer<BalanceState, BalanceActions<BalanceState>>(balanceState, {
 	loadPlayerData: (
@@ -33,17 +27,15 @@ export const balanceSlice = createProducer<BalanceState, BalanceActions<BalanceS
 	): BalanceState => {
 		const { data } = payload;
 		const { balance } = data;
-		const { player } = metadata;
+		const { user } = metadata;
 		return Immut.produce(state, (draft: BalanceState): void => {
-			const { players } = draft;
-			players[player.UserId] = { data: balance };
+			draft[`${user}`] = { ...balance };
 		});
 	},
 	closePlayerData: (state: BalanceState, payload: undefined, metadata: PlayerMetadata): BalanceState => {
-		const { player } = metadata;
+		const { user } = metadata;
 		return Immut.produce(state, (draft: BalanceState): void => {
-			const { players } = draft;
-			delete players[player.UserId];
+			delete draft[`${user}`];
 		});
 	},
 	balanceAddCoins: (
@@ -52,15 +44,13 @@ export const balanceSlice = createProducer<BalanceState, BalanceActions<BalanceS
 		metadata: BroadcastMetadata & PlayerMetadata,
 	): BalanceState => {
 		const { add } = payload;
-		const { player } = metadata;
+		const { user } = metadata;
 		return Immut.produce(state, (draft: BalanceState): void => {
-			const { players } = draft;
-			const playerState = players[player.UserId];
-			if (playerState === undefined) {
+			const player = draft[`${user}`];
+			if (player === undefined) {
 				return;
 			}
-			const { data } = playerState;
-			data.coins += add;
+			player.coins += add;
 		});
 	},
 	balanceAddGems: (
@@ -69,15 +59,13 @@ export const balanceSlice = createProducer<BalanceState, BalanceActions<BalanceS
 		metadata: BroadcastMetadata & PlayerMetadata,
 	): BalanceState => {
 		const { add } = payload;
-		const { player } = metadata;
+		const { user } = metadata;
 		return Immut.produce(state, (draft: BalanceState): void => {
-			const { players } = draft;
-			const playerState = players[player.UserId];
-			if (playerState === undefined) {
+			const player = draft[`${user}`];
+			if (player === undefined) {
 				return;
 			}
-			const { data } = playerState;
-			data.gems += add;
+			player.gems += add;
 		});
 	},
 	balanceRemoveCoins: (
@@ -86,15 +74,13 @@ export const balanceSlice = createProducer<BalanceState, BalanceActions<BalanceS
 		metadata: BroadcastMetadata & PlayerMetadata,
 	): BalanceState => {
 		const { remove } = payload;
-		const { player } = metadata;
+		const { user } = metadata;
 		return Immut.produce(state, (draft: BalanceState): void => {
-			const { players } = draft;
-			const playerState = players[player.UserId];
-			if (playerState === undefined) {
+			const player = draft[`${user}`];
+			if (player === undefined) {
 				return;
 			}
-			const { data } = playerState;
-			data.coins -= remove;
+			player.coins -= remove;
 		});
 	},
 	balanceRemoveGems: (
@@ -103,15 +89,13 @@ export const balanceSlice = createProducer<BalanceState, BalanceActions<BalanceS
 		metadata: BroadcastMetadata & PlayerMetadata,
 	): BalanceState => {
 		const { remove } = payload;
-		const { player } = metadata;
+		const { user } = metadata;
 		return Immut.produce(state, (draft: BalanceState): void => {
-			const { players } = draft;
-			const playerState = players[player.UserId];
-			if (playerState === undefined) {
+			const player = draft[`${user}`];
+			if (player === undefined) {
 				return;
 			}
-			const { data } = playerState;
-			data.gems -= remove;
+			player.gems -= remove;
 		});
 	},
 });

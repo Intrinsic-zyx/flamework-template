@@ -1,8 +1,14 @@
-import { BroadcastAction, InferState, combineProducers, createBroadcastReceiver } from "@rbxts/reflex";
-import { Events, Functions } from "client/network";
+import { BalanceState, balanceSlice } from "./slices";
+import {
+	BroadcastAction,
+	InferState,
+	combineProducers,
+	createBroadcastReceiver,
+	loggerMiddleware,
+} from "@rbxts/reflex";
+import { Events } from "client/network";
 import { RunService } from "@rbxts/services";
 import { SharedProducers, sharedProducers } from "shared/state/slices";
-import { balanceSlice } from "./slices";
 
 const isRunning = RunService.IsRunning();
 
@@ -20,12 +26,10 @@ const allProducers: SharedProducers & ClientProducers = {
 };
 
 const clientReceiver = createBroadcastReceiver({
-	requestState: async (): Promise<ClientState> => {
+	start: (): void => {
 		// Ensure that the game is running to prevent strange errors in the console.
-		assert(isRunning, "Cannot request state while the game is not running!");
-		const state = Functions.requestState();
-		Events.replicateReceivedState();
-		return state as Promise<ClientState>;
+		assert(isRunning, "Cannot start replication while the game is not running!");
+		Events.replicateStartReceiving();
 	},
 });
 // Same applies, ensure the game is running to avoid errors.
@@ -35,5 +39,6 @@ isRunning &&
 	});
 
 export const clientProducer = combineProducers<ClientProducers & SharedProducers>(allProducers).applyMiddleware(
-	clientReceiver.middleware,
+	...(isRunning ? [clientReceiver.middleware, loggerMiddleware] : ([undefined] as never)),
 );
+export type { BalanceState };

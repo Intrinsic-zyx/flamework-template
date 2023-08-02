@@ -1,14 +1,21 @@
-import { BroadcastAction, InferActions, InferState, combineProducers, createBroadcaster } from "@rbxts/reflex";
-import { Events, Functions } from "server/network";
+import { BalancePlayerState, BalanceState, PlayersState, playersSlice } from "./slices";
+import {
+	BroadcastAction,
+	InferActions,
+	InferState,
+	combineProducers,
+	createBroadcaster,
+	loggerMiddleware,
+} from "@rbxts/reflex";
+import { Events } from "server/network";
 import { SharedProducers, sharedProducers } from "shared/state/slices";
-import { balanceSlice } from "./slices";
-import { createActionsFilter } from "./utils";
+import { createFilter, filterActions } from "./utils";
 import { datastoreMiddleware } from "./middleware";
-import { playerSelector } from "./selectors";
+import { playersSelector } from "./selectors";
 
 export type ServerProducers = typeof serverProducers;
 export type ServerPlayerState = {
-	[K in keyof ServerState]: ServerState[K] extends { players: { [index: number]: infer T } } ? T : ServerState[K];
+	[K in keyof PlayersState]: PlayersState[K] extends { [user: string]: infer T } ? T : never;
 };
 
 export type ServerProducer = typeof serverProducer;
@@ -16,39 +23,43 @@ export type ServerState = InferState<ServerProducer>;
 export type ServerActions = InferActions<ServerProducer>;
 
 const serverProducers = {
-	balance: balanceSlice,
+	players: playersSlice,
 };
 const allProducers: SharedProducers & ServerProducers = {
 	...sharedProducers,
 	...serverProducers,
 };
 
-// It's best if you don't touch any of the following code unless you know for certain
-// what you're doing...
-const filteredActions = new Array<{ readonly [name: string]: Callback }>();
-for (const [_, producer] of pairs(serverProducers)) {
-	const actions = producer.getActions();
-	filteredActions.push(actions);
-}
-const actionsFilter = createActionsFilter(...filteredActions);
+const filtered = filterActions(serverProducers);
+const filter = createFilter(filtered);
 const broadcaster = createBroadcaster({
 	producers: allProducers,
-	broadcast: (players: Array<Player>, actions: Array<BroadcastAction>): void => {
-		// Filter out actions where `exclusive` is enabled
-		for (const player of players) {
-			const filtered = actionsFilter(player, actions);
-			Events.replicateActions(player, filtered);
-		}
+	beforeDispatch: (player: Player, action: BroadcastAction): BroadcastAction | undefined => {
+		const allowed = filter(player, action);
+		return allowed ? action : undefined;
+	},
+	beforeHydrate: (player: Player, state: ServerState): Partial<ServerState> => {
+		const user = player.UserId;
+		const selected = playersSelector(state, user);
+		const hydration = {
+			...state,
+			...selected,
+			players: undefined,
+		};
+		return hydration as never;
+	},
+	dispatch: (player: Player, actions: Array<BroadcastAction>): void => {
+		Events.replicateActions(player, actions);
 	},
 });
-Functions.requestState.setCallback((player: Player): ServerPlayerState => {
-	// Filter out private & hidden server state; other players' state, etc...
-	const state = broadcaster.playerRequestedState(player);
-	const selected = playerSelector(state, player);
-	return selected;
+Events.replicateStartReceiving.connect((player: Player): void => {
+	broadcaster.start(player);
 });
 
 export const serverProducer = combineProducers<ServerProducers & SharedProducers>(allProducers).applyMiddleware(
 	broadcaster.middleware,
 	datastoreMiddleware,
+	loggerMiddleware,
 );
+
+export type { BalancePlayerState, BalanceState, PlayersState };

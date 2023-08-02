@@ -1,6 +1,6 @@
 import { BroadcastAction } from "@rbxts/reflex";
 import { BroadcastMetadata, PlayerMetadata, isBroadcastMetadata, isPlayerMetadata } from "shared/state/metadata";
-import Sift from "@rbxts/sift";
+import { ServerProducers } from "../producer";
 
 function findUserId(args: Array<unknown>): (PlayerMetadata & BroadcastMetadata) | undefined {
 	for (const argument of args) {
@@ -12,25 +12,31 @@ function findUserId(args: Array<unknown>): (PlayerMetadata & BroadcastMetadata) 
 	return undefined;
 }
 
-export function createActionsFilter(
-	...actions: Array<{ readonly [name: string]: Callback }>
-): (player: Player, actions: Array<BroadcastAction>) => Array<BroadcastAction> {
-	const names = new Set<string>();
-	for (const actionMap of actions) {
-		for (const action of Sift.Dictionary.keys(actionMap)) {
-			names.add(`${action}`);
+export function filterActions(producers: ServerProducers): Set<string> {
+	const filtered = new Set<string>();
+	// eslint-disable-next-line roblox-ts/no-array-pairs
+	for (const [_, producer] of pairs(producers)) {
+		const actions: Record<string, Callback> = producer.getActions();
+		// eslint-disable-next-line roblox-ts/no-array-pairs
+		for (const [name] of pairs(actions)) {
+			filtered.add(name);
 		}
 	}
-	return (player: Player, actions: Array<BroadcastAction>): Array<BroadcastAction> => {
-		return actions.filter((action: BroadcastAction): boolean => {
-			if (!names.has(action.name)) {
-				return true;
-			}
-			const metadata = findUserId(action.arguments);
-			if (metadata === undefined || metadata.exclusive === undefined || !metadata.exclusive) {
-				return true;
-			}
-			return metadata.player.UserId === player.UserId;
-		});
+	return filtered;
+}
+
+export function createFilter(filtered: Set<string>): (player: Player, actions: BroadcastAction) => boolean {
+	return (player: Player, action: BroadcastAction): boolean => {
+		if (!filtered.has(action.name)) {
+			return true;
+		}
+		const metadata = findUserId(action.arguments);
+		if (metadata === undefined || metadata.exclusive === undefined || !metadata.exclusive) {
+			return true;
+		}
+		if (metadata.replicate !== undefined && !metadata.replicate) {
+			return false;
+		}
+		return metadata.user === player.UserId;
 	};
 }

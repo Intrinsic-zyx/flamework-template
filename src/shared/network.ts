@@ -4,6 +4,7 @@ import { Networking } from "@flamework/networking";
 // Client -> Server
 interface ServerEvents {
 	replicateReceivedState(): void;
+	replicateStartReceiving(): void;
 }
 
 // Server -> Client
@@ -12,9 +13,7 @@ interface ClientEvents {
 }
 
 // Client -> Server -> Client
-interface ServerFunctions {
-	requestState(): defined;
-}
+interface ServerFunctions {}
 
 // Server -> Client -> Server
 interface ClientFunctions {}

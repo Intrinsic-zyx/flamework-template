@@ -1,3 +1,3 @@
-import { createActionsFilter } from "./filter-actions";
+import { createFilter, filterActions } from "./filter-actions";
 
-export { createActionsFilter };
+export { createFilter, filterActions };

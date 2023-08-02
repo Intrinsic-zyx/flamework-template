@@ -31,17 +31,31 @@ export class DataService implements OnPlayerAdded, OnPlayerRemoving {
 
 	public onDataLoaded(player: Player, document: Document<Data>): void {
 		const data = document.read();
-		serverProducer.loadPlayerData({ data }, { player, exclusive: true });
+		const user = player.UserId;
+		serverProducer.loadPlayerData({ data }, { user, exclusive: true });
 		onLoadedListener(player, document);
 	}
 	public onDataClosing(player: Player, document: Document<Data>): void {
-		serverProducer.closePlayerData(undefined, { player });
+		const user = player.UserId;
+		serverProducer.closePlayerData(undefined, { user });
 		onClosingListener(player, document);
 	}
 
 	public async onPlayerAdded(player: Player): Promise<void> {
 		const { documents } = this;
-		const document = await collection.load(`${DATA_PLAYER_INDEX}${player.UserId}`);
+		// let document: Document<Data>;
+		// try {
+		// await collection.load(`${DATA_PLAYER_INDEX}${player.UserId}`)
+		const document = await collection
+			.load(`${DATA_PLAYER_INDEX}${player.UserId}`)
+			.catch((reason: unknown): void => player.Kick(tostring(reason)));
+		if (document === undefined) {
+			return;
+		}
+		// } catch (error) {
+		// player.Kick(tostring(error));
+		// return;
+		// }
 		this.onDataLoaded(player, document);
 		documents.set(player, document);
 	}
