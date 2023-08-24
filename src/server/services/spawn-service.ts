@@ -1,5 +1,5 @@
-import { OnDataLoaded } from "./data-service";
 import { Service } from "@flamework/core";
+import type { OnDataLoaded } from "./data-service";
 
 @Service({})
 export class SpawnService implements OnDataLoaded {

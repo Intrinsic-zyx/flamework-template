@@ -1,8 +1,9 @@
 import { CHARACTER_PROMISE_FUNCTION } from "shared/constants/character-constants";
-import { Character, isCharacter } from "shared/types/instances";
 import { Controller, Flamework } from "@flamework/core";
-import { OnPlayerAdded, OnPlayerRemoving } from "./player-controller";
 import { createListener } from "shared/functions/create-listener";
+import { isCharacter } from "shared/types/objects";
+import type { Character } from "shared/types/objects";
+import type { OnPlayerAdded, OnPlayerRemoving } from "./player-controller";
 
 export interface OnCharacterAdded {
 	/**

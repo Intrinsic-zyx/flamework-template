@@ -1,10 +1,12 @@
 import { DATA_PLAYER_INDEX, DATA_STORE_NAME } from "server/constants/data-constants";
-import { DATA_TEMPLATE, Data, isData } from "shared/types/data";
-import { Document, createCollection } from "@rbxts/lapis";
+import { DATA_TEMPLATE, isData } from "shared/types/data";
 import { Flamework, Service } from "@flamework/core";
-import { OnPlayerAdded, OnPlayerRemoving } from "./player-service";
+import { createCollection } from "@rbxts/lapis";
 import { createListener } from "shared/functions/create-listener";
 import { serverProducer } from "server/state/producer";
+import type { Data } from "shared/types/data";
+import type { Document } from "@rbxts/lapis";
+import type { OnPlayerAdded, OnPlayerRemoving } from "./player-service";
 
 export interface OnDataLoaded {
 	/**

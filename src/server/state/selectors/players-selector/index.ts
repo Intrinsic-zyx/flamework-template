@@ -1,7 +1,7 @@
-import { BalancePlayerState } from "server/state/slices";
-import { ServerPlayerState } from "server/state/producer";
 import { balanceSelector } from "./balance-selector";
 import { createSelector } from "@rbxts/reflex";
+import type { BalancePlayerState } from "server/state/slices";
+import type { ServerPlayerState } from "server/state/producer";
 
 export const playersSelector = createSelector(
 	[balanceSelector] as const,

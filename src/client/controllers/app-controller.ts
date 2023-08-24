@@ -1,8 +1,9 @@
 import { App } from "client/app/apps";
-import { Controller, OnStart } from "@flamework/core";
+import { Controller } from "@flamework/core";
 import { Players } from "@rbxts/services";
 import { withHookDetection } from "@rbxts/roact-hooked";
 import Roact, { createElement, mount } from "@rbxts/roact";
+import type { OnStart } from "@flamework/core";
 
 const player = Players.LocalPlayer;
 const playerGui = player.FindFirstChildOfClass("PlayerGui");

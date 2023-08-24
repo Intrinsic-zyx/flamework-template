@@ -1,4 +1,8 @@
-import {
+import { DATA_TEMPLATE } from "shared/types/data";
+import { createProducer } from "@rbxts/reflex";
+import Immut from "@rbxts/immut";
+import Sift from "@rbxts/sift";
+import type {
 	BalanceActions,
 	BalanceAddCoins,
 	BalanceAddGems,
@@ -6,10 +10,7 @@ import {
 	BalanceRemoveGems,
 	LoadPlayerData,
 } from "../actions";
-import { BalanceData, DATA_TEMPLATE } from "shared/types/data";
-import { createProducer } from "@rbxts/reflex";
-import Immut from "@rbxts/immut";
-import Sift from "@rbxts/sift";
+import type { BalanceData } from "shared/types/data";
 
 export type BalanceState = BalanceData;
 

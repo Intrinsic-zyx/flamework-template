@@ -1,6 +1,9 @@
-import { ExampleFrame, ExampleFrameProps } from "client/app/components";
-import { StoryConfig, createStory } from "..";
-import Roact, { Element } from "@rbxts/roact";
+import { ExampleFrame } from "client/app/components";
+import { createStory } from "..";
+import Roact from "@rbxts/roact";
+import type { Element } from "@rbxts/roact";
+import type { ExampleFrameProps } from "client/app/components";
+import type { StoryConfig } from "..";
 
 const exampleFrameStory: StoryConfig<ExampleFrameProps> = {
 	name: "Example Story",

@@ -1,4 +1,6 @@
-import {
+import { createProducer } from "@rbxts/reflex";
+import Immut from "@rbxts/immut";
+import type {
 	BalanceActions,
 	BalanceAddCoins,
 	BalanceAddGems,
@@ -6,10 +8,8 @@ import {
 	BalanceRemoveGems,
 	LoadPlayerData,
 } from "server/state/actions";
-import { BalanceData } from "shared/types/data";
-import { BroadcastMetadata, PlayerMetadata } from "shared/state/metadata";
-import { createProducer } from "@rbxts/reflex";
-import Immut from "@rbxts/immut";
+import type { BalanceData } from "shared/types/data";
+import type { BroadcastMetadata, PlayerMetadata } from "shared/state/metadata";
 
 export type BalancePlayerState = BalanceData;
 

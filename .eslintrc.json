@@ -27,18 +27,7 @@
 		"@typescript-eslint/member-ordering": "error",
 		"@typescript-eslint/explicit-function-return-type": "error",
 		"roblox-ts/no-delete": "off",
-		"sort-imports-es6-autofix/sort-imports-es6": [
-			"error",
-			{
-				"ignoreCase": false,
-				"ignoreMemberSort": false,
-				"memberSyntaxSortOrder": [
-					"none",
-					"all",
-					"multiple",
-					"single"
-				]
-			}
-		]
+		"sort-imports-es6-autofix/sort-imports-es6": "error",
+		"@typescript-eslint/consistent-type-imports": "error"
 	}
 }

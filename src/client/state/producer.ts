@@ -1,14 +1,11 @@
-import { BalanceState, balanceSlice } from "./slices";
-import {
-	BroadcastAction,
-	InferState,
-	combineProducers,
-	createBroadcastReceiver,
-	loggerMiddleware,
-} from "@rbxts/reflex";
 import { Events } from "client/network";
 import { RunService } from "@rbxts/services";
-import { SharedProducers, sharedProducers } from "shared/state/slices";
+import { balanceSlice } from "./slices";
+import { combineProducers, createBroadcastReceiver, loggerMiddleware } from "@rbxts/reflex";
+import { sharedProducers } from "shared/state/slices";
+import type { BalanceState } from "./slices";
+import type { BroadcastAction, InferState } from "@rbxts/reflex";
+import type { SharedProducers } from "shared/state/slices";
 
 const isRunning = RunService.IsRunning();
 

@@ -1,5 +1,5 @@
-import { BroadcastMetadata, PlayerMetadata } from "shared/state/metadata";
-import { Data } from "shared/types/data";
+import type { BroadcastMetadata, PlayerMetadata } from "shared/state/metadata";
+import type { Data } from "shared/types/data";
 
 export type BalanceActions<S> = {
 	loadPlayerData: (state: S, payload: LoadPlayerData, metadata: BroadcastMetadata & PlayerMetadata) => S;

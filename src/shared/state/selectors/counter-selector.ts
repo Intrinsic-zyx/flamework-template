@@ -1,4 +1,4 @@
-import { CounterState, SharedState } from "../slices";
+import type { CounterState, SharedState } from "../slices";
 
 export function counterSelector(state: SharedState): CounterState {
 	return state.count;

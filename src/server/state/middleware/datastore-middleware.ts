@@ -1,10 +1,10 @@
-import { Data } from "shared/types/data";
-import { DataService } from "server/services/data-service";
 import { Dependency, Flamework } from "@flamework/core";
 import { Players } from "@rbxts/services";
-import { ServerProducer, ServerState } from "../producer";
 import { isPlayerMetadata } from "shared/state/metadata";
 import { playersSelector } from "../selectors";
+import type { Data } from "shared/types/data";
+import type { DataService } from "server/services/data-service";
+import type { ServerProducer, ServerState } from "../producer";
 
 export const isKeyofData = Flamework.createGuard<keyof Data>();
 

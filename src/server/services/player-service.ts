@@ -1,6 +1,7 @@
-import { Flamework, OnStart, Service } from "@flamework/core";
+import { Flamework, Service } from "@flamework/core";
 import { Players } from "@rbxts/services";
 import { createListener } from "shared/functions/create-listener";
+import type { OnStart } from "@flamework/core";
 
 export interface OnPlayerAdded {
 	/**

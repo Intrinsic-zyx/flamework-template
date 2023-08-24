@@ -1,6 +1,7 @@
-import { BroadcastAction } from "@rbxts/reflex";
-import { BroadcastMetadata, PlayerMetadata, isBroadcastMetadata, isPlayerMetadata } from "shared/state/metadata";
-import { ServerProducers } from "../producer";
+import { isBroadcastMetadata, isPlayerMetadata } from "shared/state/metadata";
+import type { BroadcastAction } from "@rbxts/reflex";
+import type { BroadcastMetadata, PlayerMetadata } from "shared/state/metadata";
+import type { ServerProducers } from "../producer";
 
 function findUserId(args: Array<unknown>): (PlayerMetadata & BroadcastMetadata) | undefined {
 	for (const argument of args) {

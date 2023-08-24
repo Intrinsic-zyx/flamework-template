@@ -1,7 +1,8 @@
 import { ReflexProvider } from "@rbxts/roact-reflex";
 import { clientProducer } from "client/state/producer";
 import { markPureComponent } from "@rbxts/roact-hooked";
-import Roact, { Element } from "@rbxts/roact";
+import Roact from "@rbxts/roact";
+import type { Element } from "@rbxts/roact";
 
 export function App(): Element {
 	return (

@@ -1,5 +1,5 @@
-import { Listener } from "shared/types/objects";
 import { Modding } from "@flamework/core";
+import type { Listener } from "shared/types/objects";
 
 type ListenerArgs<T> = Parameters<T[keyof T]>;
 type ListenerResult<T> = ReturnType<T[keyof T]> | void;

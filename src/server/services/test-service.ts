@@ -1,7 +1,7 @@
-import { Character } from "shared/types/instances";
-import { OnCharacterAdded, OnCharacterRemoving } from "./character-service";
 import { Service } from "@flamework/core";
 import { serverProducer } from "server/state/producer";
+import type { Character } from "shared/types/objects";
+import type { OnCharacterAdded, OnCharacterRemoving } from "./character-service";
 
 @Service({})
 export class TestService implements OnCharacterAdded, OnCharacterRemoving {

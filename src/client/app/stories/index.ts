@@ -1,5 +1,6 @@
 import { withHookDetection } from "@rbxts/roact-hooked";
-import Roact, { Element } from "@rbxts/roact";
+import Roact from "@rbxts/roact";
+import type { Element } from "@rbxts/roact";
 
 type Stringify<T> = { [K in keyof T]: T[K] extends number ? string : T[K] };
 

@@ -1,5 +1,5 @@
-import { BroadcastAction } from "@rbxts/reflex";
 import { Networking } from "@flamework/networking";
+import type { BroadcastAction } from "@rbxts/reflex";
 
 // Client -> Server
 interface ServerEvents {

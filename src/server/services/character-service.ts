@@ -1,9 +1,11 @@
 import { CHARACTER_PROMISE_FUNCTION, CHARACTER_RESPAWN_DELAY } from "shared/constants/character-constants";
-import { Character, isCharacter } from "shared/types/instances";
-import { Flamework, OnStart, Service } from "@flamework/core";
-import { OnPlayerAdded, OnPlayerRemoving } from "./player-service";
+import { Flamework, Service } from "@flamework/core";
 import { Players } from "@rbxts/services";
 import { createListener } from "shared/functions/create-listener";
+import { isCharacter } from "shared/types/objects";
+import type { Character } from "shared/types/objects";
+import type { OnPlayerAdded, OnPlayerRemoving } from "./player-service";
+import type { OnStart } from "@flamework/core";
 
 export interface OnCharacterAdded {
 	/**

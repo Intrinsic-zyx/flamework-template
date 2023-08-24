@@ -1,5 +1,7 @@
-import { ClientState, clientProducer } from "client/state/producer";
-import { Controller, OnStart } from "@flamework/core";
+import { Controller } from "@flamework/core";
+import { clientProducer } from "client/state/producer";
+import type { ClientState } from "client/state/producer";
+import type { OnStart } from "@flamework/core";
 
 @Controller({})
 export class TestController implements OnStart {

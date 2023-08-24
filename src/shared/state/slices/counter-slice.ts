@@ -1,6 +1,6 @@
-import { CounterActions, CounterAdd } from "../actions";
 import { createProducer } from "@rbxts/reflex";
 import Immut from "@rbxts/immut";
+import type { CounterActions, CounterAdd } from "../actions";
 
 export interface CounterState {
 	count: number;

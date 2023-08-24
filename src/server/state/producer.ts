@@ -1,17 +1,13 @@
-import { BalancePlayerState, BalanceState, PlayersState, playersSlice } from "./slices";
-import {
-	BroadcastAction,
-	InferActions,
-	InferState,
-	combineProducers,
-	createBroadcaster,
-	loggerMiddleware,
-} from "@rbxts/reflex";
 import { Events } from "server/network";
-import { SharedProducers, sharedProducers } from "shared/state/slices";
+import { combineProducers, createBroadcaster, loggerMiddleware } from "@rbxts/reflex";
 import { createFilter, filterActions } from "./utils";
 import { datastoreMiddleware } from "./middleware";
 import { playersSelector } from "./selectors";
+import { playersSlice } from "./slices";
+import { sharedProducers } from "shared/state/slices";
+import type { BalancePlayerState, BalanceState, PlayersState } from "./slices";
+import type { BroadcastAction, InferActions, InferState } from "@rbxts/reflex";
+import type { SharedProducers } from "shared/state/slices";
 
 export type ServerProducers = typeof serverProducers;
 export type ServerPlayerState = {

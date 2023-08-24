@@ -1,5 +1,5 @@
-import { BalanceData } from "./balance-data";
 import { Flamework } from "@flamework/core";
+import type { BalanceData } from "./balance-data";
 
 export interface Data {
 	balance: BalanceData;
