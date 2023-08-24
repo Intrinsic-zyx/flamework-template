@@ -1,6 +1,6 @@
 import { DATA_PLAYER_INDEX, DATA_STORE_NAME } from "server/constants/data-constants";
 import { DATA_TEMPLATE, isData } from "shared/types/data";
-import { Flamework, Service } from "@flamework/core";
+import { Service } from "@flamework/core";
 import { createCollection } from "@rbxts/lapis";
 import { createListener } from "shared/functions/create-listener";
 import { serverProducer } from "server/state/producer";
@@ -22,8 +22,8 @@ export interface OnDataClosing {
 	onDataClosing(player: Player, document: Document<Data>): void;
 }
 
-const onLoadedListener = createListener<OnDataLoaded>("onDataLoaded", Flamework.id<OnDataLoaded>());
-const onClosingListener = createListener<OnDataClosing>("onDataClosing", Flamework.id<OnDataClosing>());
+const onLoadedListener = createListener<OnDataLoaded>();
+const onClosingListener = createListener<OnDataClosing>();
 
 const collection = createCollection(DATA_STORE_NAME, { defaultData: DATA_TEMPLATE, validate: isData });
 

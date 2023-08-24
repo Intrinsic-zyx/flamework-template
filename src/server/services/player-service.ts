@@ -1,5 +1,5 @@
-import { Flamework, Service } from "@flamework/core";
 import { Players } from "@rbxts/services";
+import { Service } from "@flamework/core";
 import { createListener } from "shared/functions/create-listener";
 import type { OnStart } from "@flamework/core";
 
@@ -17,8 +17,8 @@ export interface OnPlayerRemoving {
 	onPlayerRemoving(player: Player): void;
 }
 
-const onAddedListener = createListener<OnPlayerAdded>("onPlayerAdded", Flamework.id<OnPlayerAdded>());
-const onRemovingListener = createListener<OnPlayerRemoving>("onPlayerRemoving", Flamework.id<OnPlayerRemoving>());
+const onAddedListener = createListener<OnPlayerAdded>();
+const onRemovingListener = createListener<OnPlayerRemoving>();
 
 @Service({})
 export class PlayerService implements OnStart {

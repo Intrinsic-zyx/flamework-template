@@ -1,5 +1,5 @@
 import { CHARACTER_PROMISE_FUNCTION } from "shared/constants/character-constants";
-import { Controller, Flamework } from "@flamework/core";
+import { Controller } from "@flamework/core";
 import { createListener } from "shared/functions/create-listener";
 import { isCharacter } from "shared/types/objects";
 import type { Character } from "shared/types/objects";
@@ -19,11 +19,8 @@ export interface OnCharacterRemoving {
 	onCharacterRemoving(character: Model, player: Player): void;
 }
 
-const onAddedListener = createListener<OnCharacterAdded>("onCharacterAdded", Flamework.id<OnCharacterAdded>());
-const onRemovingListener = createListener<OnCharacterRemoving>(
-	"onCharacterRemoving",
-	Flamework.id<OnCharacterRemoving>(),
-);
+const onAddedListener = createListener<OnCharacterAdded>();
+const onRemovingListener = createListener<OnCharacterRemoving>();
 
 const charactersFolder = game.Workspace.characters;
 const playerCharacters = charactersFolder.players;
