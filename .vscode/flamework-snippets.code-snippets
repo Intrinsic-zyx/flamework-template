@@ -7,7 +7,8 @@
 		],
 		"description": "Create a Flamework controller",
 		"body": [
-			"import { Controller, OnStart } from \"@flamework/core\";",
+			"import { Controller } from \"@flamework/core\";",
+			"import type { OnStart } from \"@flamework/core\";",
 			"",
 			"@Controller({})",
 			"export class ${TM_FILENAME_BASE/(.*)/${1:/pascalcase}/g} implements OnStart {",
@@ -26,9 +27,30 @@
 		],
 		"description": "Create a Flamework service",
 		"body": [
-			"import { OnStart, Service } from \"@flamework/core\";",
+			"import { Service } from \"@flamework/core\";",
+			"import type { OnStart } from \"@flamework/core\";",
 			"",
 			"@Service({})",
+			"export class ${TM_FILENAME_BASE/(.*)/${1:/pascalcase}/g} implements OnStart {",
+			"\tpublic onStart(): void {",
+			"\t\t$2",
+			"\t}",
+			"}",
+			"",
+		]
+	},
+	"Flamework Manager": {
+		"scope": "typescript",
+		"prefix": [
+			"manager",
+			"flameworkmanager"
+		],
+		"description": "Create a Flamework manager",
+		"body": [
+			"import { Manager } from \"shared/decorators/manager\";",
+			"import type { OnStart } from \"@flamework/core\";",
+			"",
+			"@Manager({})",
 			"export class ${TM_FILENAME_BASE/(.*)/${1:/pascalcase}/g} implements OnStart {",
 			"\tpublic onStart(): void {",
 			"\t\t$2",
@@ -69,7 +91,7 @@
 		],
 		"description": "Create a Flamework listener",
 		"body": [
-			"const on$1Listener = createListener<$2>(\"$3\", Flamework.id<$2>());",
+			"const on$1Listener = createListener<$2>();",
 		]
 	}
 }
