@@ -1,15 +1,20 @@
+import { DATA_TEMPLATE } from "shared/types/data";
+import { Dictionary } from "@rbxts/sift";
 import { balanceSelector } from "./balance-selector";
 import { createSelector } from "@rbxts/reflex";
 import type { BalancePlayerState } from "server/state/slices";
-import type { ServerPlayerState } from "server/state/producer";
+import type { ServerPlayerState, ServerState } from "server/state/producer";
 
-export const playersSelector = createSelector(
-	[balanceSelector] as const,
-	(balance: BalancePlayerState): ServerPlayerState => {
+const BALANCE_STATE: BalancePlayerState = {
+	data: Dictionary.copyDeep(DATA_TEMPLATE.balance),
+};
+
+export function playersSelector(user: string): (state: ServerState) => ServerPlayerState {
+	return createSelector([balanceSelector(user)], (balance?: BalancePlayerState): ServerPlayerState => {
 		return {
-			balance,
+			balance: balance ?? BALANCE_STATE,
 		};
-	},
-);
+	});
+}
 
 export { balanceSelector };

@@ -1,4 +1,5 @@
 import { DATA_TEMPLATE } from "shared/types/data";
+import { clear } from "@rbxts/immut/src/table";
 import { createProducer } from "@rbxts/reflex";
 import Immut from "@rbxts/immut";
 import Sift from "@rbxts/sift";
@@ -8,20 +9,25 @@ import type {
 	BalanceAddGems,
 	BalanceRemoveCoins,
 	BalanceRemoveGems,
-	LoadPlayerData,
 } from "../actions";
 import type { BalanceData } from "shared/types/data";
+import type { DataPlayerAdded, DataPlayerRemoving } from "shared/state/actions";
 
 export type BalanceState = BalanceData;
 
 const balanceState: BalanceState = Sift.Dictionary.copyDeep(DATA_TEMPLATE.balance);
 
 export const balanceSlice = createProducer<BalanceState, BalanceActions<BalanceState>>(balanceState, {
-	loadPlayerData: (state: BalanceState, payload: LoadPlayerData): BalanceState => {
+	dataPlayerAdded: (state: BalanceState, payload: DataPlayerAdded): BalanceState => {
 		const { data } = payload;
 		const { balance } = data;
 		return Immut.produce(state, (draft: Writable<BalanceState>): void => {
 			draft = balance;
+		});
+	},
+	dataPlayerRemoving: (state: BalanceState, payload: DataPlayerRemoving): BalanceState => {
+		return Immut.produce(state, (draft: Writable<BalanceState>): void => {
+			clear(draft);
 		});
 	},
 	balanceAddCoins: (state: BalanceState, payload: BalanceAddCoins): BalanceState => {

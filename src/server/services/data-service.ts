@@ -3,6 +3,7 @@ import { DATA_TEMPLATE, isData } from "shared/types/data";
 import { Service } from "@flamework/core";
 import { createCollection } from "@rbxts/lapis";
 import { createListener } from "shared/functions/create-listener";
+import { dataSelector } from "server/state/selectors";
 import { serverProducer } from "server/state/producer";
 import type { Data } from "shared/types/data";
 import type { Document } from "@rbxts/lapis";
@@ -12,65 +13,70 @@ export interface OnDataLoaded {
 	/**
 	 * @hideinherited
 	 */
-	onDataLoaded(player: Player, document: Document<Data>): void;
+	onDataLoaded(player: Player, data: Readonly<Data>): void;
 }
 
 export interface OnDataClosing {
 	/**
 	 * @hideinherited
 	 */
-	onDataClosing(player: Player, document: Document<Data>): void;
+	onDataClosing(player: Player, data: Readonly<Data>): void;
 }
 
 const onLoadedListener = createListener<OnDataLoaded>();
 const onClosingListener = createListener<OnDataClosing>();
 
-const collection = createCollection(DATA_STORE_NAME, { defaultData: DATA_TEMPLATE, validate: isData });
+const collection = createCollection(DATA_STORE_NAME, {
+	defaultData: DATA_TEMPLATE,
+	validate: isData,
+});
 
 @Service({})
 export class DataService implements OnPlayerAdded, OnPlayerRemoving {
-	public readonly documents = new Map<Player, Document<Data>>();
+	private readonly documents = new Map<Player, Document<Data>>();
+	private readonly subscriptions = new Map<Player, () => void>();
 
-	public onDataLoaded(player: Player, document: Document<Data>): void {
-		const data = document.read();
-		const user = player.UserId;
-		serverProducer.loadPlayerData({ data }, { user, exclusive: true });
-		onLoadedListener(player, document);
+	public onDataLoaded(player: Player, data: Readonly<Data>): void {
+		const user = player.Name;
+		serverProducer.dataPlayerAdded({ data }, { user, exclusive: true });
+		onLoadedListener(player, data);
 	}
-	public onDataClosing(player: Player, document: Document<Data>): void {
-		const user = player.UserId;
-		serverProducer.closePlayerData(undefined, { user });
-		onClosingListener(player, document);
+
+	public onDataClosing(player: Player, data: Readonly<Data>): Array<Promise<void>> {
+		const user = player.Name;
+		serverProducer.dataPlayerRemoving(undefined, { user });
+		return onClosingListener(player, data);
 	}
 
 	public async onPlayerAdded(player: Player): Promise<void> {
-		const { documents } = this;
-		// let document: Document<Data>;
-		// try {
-		// await collection.load(`${DATA_PLAYER_INDEX}${player.UserId}`)
-		const document = await collection
-			.load(`${DATA_PLAYER_INDEX}${player.UserId}`)
-			.catch((reason: unknown): void => player.Kick(tostring(reason)));
-		if (document === undefined) {
-			return;
+		const { documents, subscriptions } = this;
+		try {
+			const document = await collection.load(`${DATA_PLAYER_INDEX}${player.UserId}`);
+			// Subscribe to data changes, write to document, no middleware.
+			const data = document.read();
+			this.onDataLoaded(player, data);
+			const unsubscribe = serverProducer.subscribe(dataSelector(player.Name), (state: Data): void => {
+				document.write(state);
+			});
+			documents.set(player, document);
+			subscriptions.set(player, unsubscribe);
+		} catch (error: unknown) {
+			warn(`Failed to load data for ${player.Name}: ${error}`);
+			this.onDataLoaded(player, DATA_TEMPLATE);
 		}
-		// } catch (error) {
-		// player.Kick(tostring(error));
-		// return;
-		// }
-		this.onDataLoaded(player, document);
-		documents.set(player, document);
 	}
 
 	public async onPlayerRemoving(player: Player): Promise<void> {
-		const { documents } = this;
+		const { documents, subscriptions } = this;
 		const document = documents.get(player);
-		if (document === undefined) {
-			return;
+		const unsubscribe = subscriptions.get(player);
+		if (unsubscribe !== undefined) {
+			unsubscribe();
 		}
 		documents.delete(player);
-		const promises = onClosingListener(player, document);
+		const data = document?.read() ?? DATA_TEMPLATE;
+		const promises = this.onDataClosing(player, data);
 		await Promise.all(promises);
-		await document.close().catch(warn);
+		await document?.close().catch(warn);
 	}
 }

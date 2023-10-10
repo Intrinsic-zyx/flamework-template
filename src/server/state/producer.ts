@@ -1,7 +1,6 @@
 import { Events } from "server/network";
 import { combineProducers, createBroadcaster, loggerMiddleware } from "@rbxts/reflex";
 import { createFilter, filterActions } from "./utils";
-import { datastoreMiddleware } from "./middleware";
 import { playersSelector } from "./selectors";
 import { playersSlice } from "./slices";
 import { sharedProducers } from "shared/state/slices";
@@ -35,14 +34,15 @@ const broadcaster = createBroadcaster({
 		return allowed ? action : undefined;
 	},
 	beforeHydrate: (player: Player, state: ServerState): Partial<ServerState> => {
-		const user = player.UserId;
-		const selected = playersSelector(state, user);
+		const user = player.Name;
+		const selector = playersSelector(user);
+		const selected = selector(state);
 		const hydration = {
 			...state,
 			...selected,
 			players: undefined,
 		};
-		return hydration as never;
+		return hydration;
 	},
 	dispatch: (player: Player, actions: Array<BroadcastAction>): void => {
 		Events.replicateActions(player, actions);
@@ -54,7 +54,6 @@ Events.replicateStartReceiving.connect((player: Player): void => {
 
 export const serverProducer = combineProducers<ServerProducers & SharedProducers>(allProducers).applyMiddleware(
 	broadcaster.middleware,
-	datastoreMiddleware,
 	loggerMiddleware,
 );
 

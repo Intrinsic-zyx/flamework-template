@@ -6,12 +6,14 @@ import type {
 	BalanceAddGems,
 	BalanceRemoveCoins,
 	BalanceRemoveGems,
-	LoadPlayerData,
 } from "server/state/actions";
 import type { BalanceData } from "shared/types/data";
 import type { BroadcastMetadata, PlayerMetadata } from "shared/state/metadata";
+import type { DataPlayerAdded } from "shared/state/actions";
 
-export type BalancePlayerState = BalanceData;
+export interface BalancePlayerState {
+	data: BalanceData;
+}
 
 export interface BalanceState {
 	[user: string]: BalancePlayerState;
@@ -20,22 +22,22 @@ export interface BalanceState {
 const balanceState: BalanceState = {};
 
 export const balanceSlice = createProducer<BalanceState, BalanceActions<BalanceState>>(balanceState, {
-	loadPlayerData: (
+	dataPlayerAdded: (
 		state: BalanceState,
-		payload: LoadPlayerData,
+		payload: DataPlayerAdded,
 		metadata: BroadcastMetadata & PlayerMetadata,
 	): BalanceState => {
 		const { data } = payload;
 		const { balance } = data;
 		const { user } = metadata;
 		return Immut.produce(state, (draft: BalanceState): void => {
-			draft[`${user}`] = { ...balance };
+			draft[user] = { data: balance };
 		});
 	},
-	closePlayerData: (state: BalanceState, payload: undefined, metadata: PlayerMetadata): BalanceState => {
+	dataPlayerRemoving: (state: BalanceState, payload: undefined, metadata: PlayerMetadata): BalanceState => {
 		const { user } = metadata;
 		return Immut.produce(state, (draft: BalanceState): void => {
-			delete draft[`${user}`];
+			delete draft[user];
 		});
 	},
 	balanceAddCoins: (
@@ -46,11 +48,12 @@ export const balanceSlice = createProducer<BalanceState, BalanceActions<BalanceS
 		const { add } = payload;
 		const { user } = metadata;
 		return Immut.produce(state, (draft: BalanceState): void => {
-			const player = draft[`${user}`];
+			const player = draft[user];
 			if (player === undefined) {
 				return;
 			}
-			player.coins += add;
+			const { data } = player;
+			data.coins += add;
 		});
 	},
 	balanceAddGems: (
@@ -61,11 +64,12 @@ export const balanceSlice = createProducer<BalanceState, BalanceActions<BalanceS
 		const { add } = payload;
 		const { user } = metadata;
 		return Immut.produce(state, (draft: BalanceState): void => {
-			const player = draft[`${user}`];
+			const player = draft[user];
 			if (player === undefined) {
 				return;
 			}
-			player.gems += add;
+			const { data } = player;
+			data.gems += add;
 		});
 	},
 	balanceRemoveCoins: (
@@ -76,11 +80,12 @@ export const balanceSlice = createProducer<BalanceState, BalanceActions<BalanceS
 		const { remove } = payload;
 		const { user } = metadata;
 		return Immut.produce(state, (draft: BalanceState): void => {
-			const player = draft[`${user}`];
+			const player = draft[user];
 			if (player === undefined) {
 				return;
 			}
-			player.coins -= remove;
+			const { data } = player;
+			data.coins -= remove;
 		});
 	},
 	balanceRemoveGems: (
@@ -91,11 +96,12 @@ export const balanceSlice = createProducer<BalanceState, BalanceActions<BalanceS
 		const { remove } = payload;
 		const { user } = metadata;
 		return Immut.produce(state, (draft: BalanceState): void => {
-			const player = draft[`${user}`];
+			const player = draft[user];
 			if (player === undefined) {
 				return;
 			}
-			player.gems -= remove;
+			const { data } = player;
+			data.gems -= remove;
 		});
 	},
 });

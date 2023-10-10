@@ -4,7 +4,6 @@ import type {
 	BalanceAddGems,
 	BalanceRemoveCoins,
 	BalanceRemoveGems,
-	LoadPlayerData,
 } from "./balance-actions";
 
-export type { BalanceActions, BalanceAddCoins, BalanceAddGems, BalanceRemoveCoins, BalanceRemoveGems, LoadPlayerData };
+export type { BalanceActions, BalanceAddCoins, BalanceAddGems, BalanceRemoveCoins, BalanceRemoveGems };

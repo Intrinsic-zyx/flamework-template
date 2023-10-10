@@ -15,10 +15,8 @@ function findUserId(args: Array<unknown>): (PlayerMetadata & BroadcastMetadata) 
 
 export function filterActions(producers: ServerProducers): Set<string> {
 	const filtered = new Set<string>();
-	// eslint-disable-next-line roblox-ts/no-array-pairs
 	for (const [_, producer] of pairs(producers)) {
-		const actions: Record<string, Callback> = producer.getActions();
-		// eslint-disable-next-line roblox-ts/no-array-pairs
+		const actions = producer.getActions();
 		for (const [name] of pairs(actions)) {
 			filtered.add(name);
 		}
@@ -38,6 +36,6 @@ export function createFilter(filtered: Set<string>): (player: Player, actions: B
 		if (metadata.replicate !== undefined && !metadata.replicate) {
 			return false;
 		}
-		return metadata.user === player.UserId;
+		return metadata.user === player.Name;
 	};
 }

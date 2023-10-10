@@ -1,17 +1,12 @@
 import type { BroadcastMetadata } from "shared/state/metadata";
-import type { Data } from "shared/types/data";
+import type { DataActions } from "shared/state/actions";
 
 export type BalanceActions<S> = {
-	loadPlayerData: (state: S, payload: LoadPlayerData, metadata: BroadcastMetadata) => S;
 	balanceAddCoins: (state: S, payload: BalanceAddCoins, metadata: BroadcastMetadata) => S;
 	balanceRemoveCoins: (state: S, payload: BalanceRemoveCoins, metadata: BroadcastMetadata) => S;
 	balanceAddGems: (state: S, payload: BalanceAddGems, metadata: BroadcastMetadata) => S;
 	balanceRemoveGems: (state: S, payload: BalanceRemoveGems, metadata: BroadcastMetadata) => S;
-};
-
-export interface LoadPlayerData {
-	data: Data;
-}
+} & DataActions<S>;
 
 export interface BalanceAddCoins {
 	add: number;
