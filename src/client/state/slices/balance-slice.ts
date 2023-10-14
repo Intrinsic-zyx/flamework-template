@@ -21,8 +21,8 @@ export const balanceSlice = createProducer<BalanceState, BalanceActions<BalanceS
 	dataPlayerAdded: (state: BalanceState, payload: DataPlayerAdded): BalanceState => {
 		const { data } = payload;
 		const { balance } = data;
-		return Immut.produce(state, (draft: Writable<BalanceState>): void => {
-			draft = balance;
+		return Immut.produce(state, (draft: Writable<BalanceState>): BalanceState => {
+			return balance;
 		});
 	},
 	dataPlayerRemoving: (state: BalanceState, payload: DataPlayerRemoving): BalanceState => {
